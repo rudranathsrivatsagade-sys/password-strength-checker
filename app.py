@@ -1,35 +1,34 @@
-password = input("Enter your password: ")
+import streamlit as st
+import re
 
-has_upper = False
-has_lower = False
-has_digit = False
-has_special = False
+st.set_page_config(page_title="Password Strength Checker")
 
-special_chars = "!@#$%^&*()-_+=<>?/"
+st.title("🔐 Password Strength Checker")
 
-# Length check
-if len(password) < 8:
-    print("Weak password: Must be at least 8 characters")
-else:
-    for ch in password:
-        if ch.isupper():
-            has_upper = True
-        elif ch.islower():
-            has_lower = True
-        elif ch.isdigit():
-            has_digit = True
-        elif ch in special_chars:
-            has_special = True
+password = st.text_input("Enter your password", type="password")
 
-    if has_upper and has_lower and has_digit and has_special:
-        print("Strong password 💪")
+def check_strength(pw):
+    score = 0
+    if len(pw) >= 8:
+        score += 1
+    if re.search(r"[A-Z]", pw):
+        score += 1
+    if re.search(r"[a-z]", pw):
+        score += 1
+    if re.search(r"[0-9]", pw):
+        score += 1
+    if re.search(r"[@$!%*?&#]", pw):
+        score += 1
+    return score
+
+if password:
+    strength = check_strength(password)
+
+    if strength <= 2:
+        st.error("Weak password ❌")
+    elif strength == 3:
+        st.warning("Medium password ⚠️")
     else:
-        print("Weak password ❌")
-        if not has_upper:
-            print("- Missing uppercase letter")
-        if not has_lower:
-            print("- Missing lowercase letter")
-        if not has_digit:
-            print("- Missing digit")
-        if not has_special:
-            print("- Missing special character")
+        st.success("Strong password ✅")
+
+    st.progress(strength / 5)
