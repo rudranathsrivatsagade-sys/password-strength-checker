@@ -1,34 +1,43 @@
-import streamlit as st
+from flask import Flask, render_template, request
 import re
 
-st.set_page_config(page_title="Password Strength Checker")
+app = Flask(__name__)
 
-st.title("🔐 Password Strength Checker")
+def check_password(password):
+    reasons = []
 
-password = st.text_input("Enter your password", type="password")
+    if len(password) < 8:
+        reasons.append("❌ Must be at least 8 characters long")
 
-def check_strength(pw):
-    score = 0
-    if len(pw) >= 8:
-        score += 1
-    if re.search(r"[A-Z]", pw):
-        score += 1
-    if re.search(r"[a-z]", pw):
-        score += 1
-    if re.search(r"[0-9]", pw):
-        score += 1
-    if re.search(r"[@$!%*?&#]", pw):
-        score += 1
-    return score
+    if not re.search(r"[A-Z]", password):
+        reasons.append("❌ Must contain at least one uppercase letter")
 
-if password:
-    strength = check_strength(password)
+    if not re.search(r"[a-z]", password):
+        reasons.append("❌ Must contain at least one lowercase letter")
 
-    if strength <= 2:
-        st.error("Weak password ❌")
-    elif strength == 3:
-        st.warning("Medium password ⚠️")
-    else:
-        st.success("Strong password ✅")
+    if not re.search(r"[0-9]", password):
+        reasons.append("❌ Must contain at least one number")
 
-    st.progress(strength / 5)
+    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+        reasons.append("❌ Must contain at least one special character")
+
+    if not reasons:
+        return "✅ Strong password!", []
+
+    return "⚠️ Weak password", reasons
+
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+    result = ""
+    reasons = []
+
+    if request.method == "POST":
+        password = request.form["password"]
+        result, reasons = check_password(password)
+
+    return render_template("index.html", result=result, reasons=reasons)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

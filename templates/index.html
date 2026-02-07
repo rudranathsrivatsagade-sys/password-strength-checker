@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Password Strength Checker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>🔐 Password Strength Checker</h1>
+
+    <form method="POST">
+        <input type="password" name="password" placeholder="Enter your password" required>
+        <button type="submit">Check</button>
+    </form>
+
+    {% if result %}
+        <h2>{{ result }}</h2>
+    {% endif %}
+
+    {% if reasons %}
+        <ul>
+            {% for reason in reasons %}
+                <li>{{ reason }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="rules">
+        <h3>Password Rules</h3>
+        <p>✔ Minimum 8 characters</p>
+        <p>✔ One uppercase letter</p>
+        <p>✔ One lowercase letter</p>
+        <p>✔ One number</p>
+        <p>✔ One special character</p>
+    </div>
+</div>
+
+</body>
+</html>
