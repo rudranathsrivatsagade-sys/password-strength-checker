@@ -1,35 +1,34 @@
-password = input("Enter your password: ")
+from flask import Flask, render_template, request
+import re
 
-has_upper = False
-has_lower = False
-has_digit = False
-has_special = False
+app = Flask(__name__)
 
-special_chars = "!@#$%^&*()-_+=<>?/"
+def check_password(password):
+    issues = []
 
-# Length check
-if len(password) < 8:
-    print("Weak password: Must be at least 8 characters")
-else:
-    for ch in password:
-        if ch.isupper():
-            has_upper = True
-        elif ch.islower():
-            has_lower = True
-        elif ch.isdigit():
-            has_digit = True
-        elif ch in special_chars:
-            has_special = True
+    if len(password) < 8:
+        issues.append("Minimum 8 characters")
+    if not re.search(r"[A-Z]", password):
+        issues.append("At least one uppercase letter")
+    if not re.search(r"[a-z]", password):
+        issues.append("At least one lowercase letter")
+    if not re.search(r"[0-9]", password):
+        issues.append("At least one number")
+    if not re.search(r"[^A-Za-z0-9]", password):
+        issues.append("At least one special character")
 
-    if has_upper and has_lower and has_digit and has_special:
-        print("Strong password 💪")
-    else:
-        print("Weak password ❌")
-        if not has_upper:
-            print("- Missing uppercase letter")
-        if not has_lower:
-            print("- Missing lowercase letter")
-        if not has_digit:
-            print("- Missing digit")
-        if not has_special:
-            print("- Missing special character")
+    return issues
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+    issues = []
+    password = ""
+
+    if request.method == "POST":
+        password = request.form.get("password", "")
+        issues = check_password(password)
+
+    return render_template("index.html", issues=issues, password=password)
+
+if __name__ == "__main__":
+    app.run()
