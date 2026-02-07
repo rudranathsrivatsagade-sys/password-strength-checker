@@ -7,52 +7,52 @@
 </head>
 <body>
 
-<div class="container">
+<div class="card">
     <h1>🔐 Password Strength Checker</h1>
 
     <form method="POST">
-        <input type="password" name="password" placeholder="Enter password" required>
+        <input type="password" name="password" placeholder="Enter your password" required>
         <button type="submit">Check</button>
     </form>
 
-    {% if percentage %}
-        <div class="meter"
-            <div class="bar"
-                 style="
-                 width: {{ percentage }}%;
-                 background-color:
-                 {% if percentage <= 40 %}
-                     #ef4444
-                 {% elif percentage <= 70 %}
-                     #facc15
-                 {% else %}
-                     #22c55e
-                 {% endif %};
-                 ">
-            </div>
-        </div>
-
-        <p class="strength-text">Strength: {{ percentage }}%</p>
-
-        <p class="strength-label">
-            {% if percentage <= 40 %}
-                Weak ❌
-            {% elif percentage <= 70 %}
-                Medium ⚠️
-            {% else %}
-                Strong ✅
-            {% endif %}
+    {% if percentage > 0 %}
+    <!-- Strength Bar -->
+    <div class="strength-section">
+        <p class="strength-text {{ color }}">
+            Strength: {{ level }} ({{ percentage }}%)
         </p>
-    {% endif %}
 
-    {% if reasons %}
+        <div class="progress">
+            <div class="progress-bar {{ color }}" style="width: {{ percentage }}%;"></div>
+        </div>
+    </div>
+
+    <!-- Weak Reasons -->
+    {% if level != "Strong" %}
+    <div class="warning">
+        ⚠️ Why your password is weak:
         <ul>
-            {% for reason in reasons %}
-                <li>❌ {{ reason }}</li>
-            {% endfor %}
+            {% if not rules.length %}<li>❌ Minimum 8 characters</li>{% endif %}
+            {% if not rules.uppercase %}<li>❌ Add an uppercase letter</li>{% endif %}
+            {% if not rules.lowercase %}<li>❌ Add a lowercase letter</li>{% endif %}
+            {% if not rules.number %}<li>❌ Add a number</li>{% endif %}
+            {% if not rules.special %}<li>❌ Add a special character</li>{% endif %}
         </ul>
+    </div>
     {% endif %}
 
+    <!-- Password Rules (KEPT) -->
+    <div class="rules">
+        <h3>Password Rules</h3>
+        <ul>
+            <li>{{ "✔" if rules.length else "❌" }} Minimum 8 characters</li>
+            <li>{{ "✔" if rules.uppercase else "❌" }} One uppercase letter</li>
+            <li>{{ "✔" if rules.lowercase else "❌" }} One lowercase letter</li>
+            <li>{{ "✔" if rules.number else "❌" }} One number</li>
+            <li>{{ "✔" if rules.special else "❌" }} One special character</li>
+        </ul>
+    </div>
+    {% endif %}
 </div>
 
 </body>

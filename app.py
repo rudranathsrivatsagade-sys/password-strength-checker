@@ -3,54 +3,51 @@ import re
 
 app = Flask(__name__)
 
-def check_password(password):
-    score = 0
-    reasons = []
+def analyze_password(password):
+    rules = {
+        "length": len(password) >= 8,
+        "uppercase": re.search(r"[A-Z]", password) is not None,
+        "lowercase": re.search(r"[a-z]", password) is not None,
+        "number": re.search(r"[0-9]", password) is not None,
+        "special": re.search(r"[!@#$%^&*(),.?\":{}|<>]", password) is not None,
+    }
 
-    if len(password) >= 8:
-        score += 1
+    score = sum(rules.values())
+    percentage = int((score / len(rules)) * 100)
+
+    if percentage < 40:
+        level = "Weak"
+        color = "red"
+    elif percentage < 80:
+        level = "Medium"
+        color = "orange"
     else:
-        reasons.append("Minimum 8 characters")
+        level = "Strong"
+        color = "green"
 
-    if re.search(r"[A-Z]", password):
-        score += 1
-    else:
-        reasons.append("Add at least one uppercase letter")
-
-    if re.search(r"[a-z]", password):
-        score += 1
-    else:
-        reasons.append("Add at least one lowercase letter")
-
-    if re.search(r"[0-9]", password):
-        score += 1
-    else:
-        reasons.append("Add at least one number")
-
-    if re.search(r"[^A-Za-z0-9]", password):
-        score += 1
-    else:
-        reasons.append("Add at least one special character")
-
-    percentage = int((score / 5) * 100)
-    return percentage, reasons
+    return rules, percentage, level, color
 
 
 @app.route("/", methods=["GET", "POST"])
 def home():
+    result = None
+    rules = {}
     percentage = 0
-    reasons = []
+    level = ""
+    color = ""
 
     if request.method == "POST":
         password = request.form.get("password", "")
-        percentage, reasons = check_password(password)
+        rules, percentage, level, color = analyze_password(password)
 
     return render_template(
         "index.html",
+        rules=rules,
         percentage=percentage,
-        reasons=reasons
+        level=level,
+        color=color
     )
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

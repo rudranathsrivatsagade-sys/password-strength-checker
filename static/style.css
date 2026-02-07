@@ -1,75 +1,80 @@
 body {
+    background: radial-gradient(circle at top, #0f2027, #000);
     font-family: Arial, sans-serif;
-    background: #0f172a;
-    color: #e5e7eb;
+    color: white;
 }
 
-.container {
-    width: 400px;
-    margin: 80px auto;
-    background: #020617;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
+.card {
+    width: 420px;
+    margin: 60px auto;
+    background: #050b1a;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 0 25px rgba(0, 200, 255, 0.35);
 }
 
 h1 {
     text-align: center;
-    color: #38bdf8;
+    margin-bottom: 20px;
 }
 
 input {
     width: 100%;
-    padding: 10px;
-    margin-top: 15px;
-    border-radius: 5px;
+    padding: 12px;
+    border-radius: 8px;
     border: none;
+    margin-bottom: 10px;
 }
 
 button {
     width: 100%;
-    padding: 10px;
-    margin-top: 15px;
-    background: #38bdf8;
+    padding: 12px;
+    background: #39bdf8;
     border: none;
+    border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
-    border-radius: 5px;
 }
 
 button:hover {
-    background: #0ea5e9;
+    background: #1ea7e1;
 }
 
-.meter {
-    width: 100%;
+.strength-section {
+    margin-top: 15px;
+}
+
+.progress {
+    background: #222;
+    border-radius: 8px;
     height: 14px;
-    background: #1e293b;
-    border-radius: 10px;
-    margin-top: 20px;
     overflow: hidden;
 }
 
-.bar {
+.progress-bar {
     height: 100%;
     transition: width 0.5s ease;
 }
 
+.red { background: #ff4d4d; }
+.orange { background: #ffb84d; }
+.green { background: #4dff88; }
+
 .strength-text {
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-.strength-label {
-    margin-top: 5px;
-    font-weight: bold;
-}
-
-ul {
-    margin-top: 15px;
-    padding-left: 20px;
-}
-
-li {
     margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.warning {
+    margin-top: 15px;
+    color: #ff8080;
+}
+
+.rules {
+    margin-top: 20px;
+}
+
+.rules ul {
+    list-style: none;
+    padding-left: 0;
 }
