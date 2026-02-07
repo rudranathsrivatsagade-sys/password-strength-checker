@@ -4,40 +4,53 @@ import re
 app = Flask(__name__)
 
 def check_password(password):
+    score = 0
     reasons = []
 
-    if len(password) < 8:
-        reasons.append("❌ Must be at least 8 characters long")
+    if len(password) >= 8:
+        score += 1
+    else:
+        reasons.append("Minimum 8 characters")
 
-    if not re.search(r"[A-Z]", password):
-        reasons.append("❌ Must contain at least one uppercase letter")
+    if re.search(r"[A-Z]", password):
+        score += 1
+    else:
+        reasons.append("Add at least one uppercase letter")
 
-    if not re.search(r"[a-z]", password):
-        reasons.append("❌ Must contain at least one lowercase letter")
+    if re.search(r"[a-z]", password):
+        score += 1
+    else:
+        reasons.append("Add at least one lowercase letter")
 
-    if not re.search(r"[0-9]", password):
-        reasons.append("❌ Must contain at least one number")
+    if re.search(r"[0-9]", password):
+        score += 1
+    else:
+        reasons.append("Add at least one number")
 
-    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
-        reasons.append("❌ Must contain at least one special character")
+    if re.search(r"[^A-Za-z0-9]", password):
+        score += 1
+    else:
+        reasons.append("Add at least one special character")
 
-    if not reasons:
-        return "✅ Strong password!", []
-
-    return "⚠️ Weak password", reasons
+    percentage = int((score / 5) * 100)
+    return percentage, reasons
 
 
 @app.route("/", methods=["GET", "POST"])
 def home():
-    result = ""
+    percentage = 0
     reasons = []
 
     if request.method == "POST":
-        password = request.form["password"]
-        result, reasons = check_password(password)
+        password = request.form.get("password", "")
+        percentage, reasons = check_password(password)
 
-    return render_template("index.html", result=result, reasons=reasons)
+    return render_template(
+        "index.html",
+        percentage=percentage,
+        reasons=reasons
+    )
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()

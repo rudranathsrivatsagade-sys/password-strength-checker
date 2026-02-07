@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Password Strength Checker</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -10,30 +11,48 @@
     <h1>🔐 Password Strength Checker</h1>
 
     <form method="POST">
-        <input type="password" name="password" placeholder="Enter your password" required>
+        <input type="password" name="password" placeholder="Enter password" required>
         <button type="submit">Check</button>
     </form>
 
-    {% if result %}
-        <h2>{{ result }}</h2>
+    {% if percentage %}
+        <div class="meter"
+            <div class="bar"
+                 style="
+                 width: {{ percentage }}%;
+                 background-color:
+                 {% if percentage <= 40 %}
+                     #ef4444
+                 {% elif percentage <= 70 %}
+                     #facc15
+                 {% else %}
+                     #22c55e
+                 {% endif %};
+                 ">
+            </div>
+        </div>
+
+        <p class="strength-text">Strength: {{ percentage }}%</p>
+
+        <p class="strength-label">
+            {% if percentage <= 40 %}
+                Weak ❌
+            {% elif percentage <= 70 %}
+                Medium ⚠️
+            {% else %}
+                Strong ✅
+            {% endif %}
+        </p>
     {% endif %}
 
     {% if reasons %}
         <ul>
             {% for reason in reasons %}
-                <li>{{ reason }}</li>
+                <li>❌ {{ reason }}</li>
             {% endfor %}
         </ul>
     {% endif %}
 
-    <div class="rules">
-        <h3>Password Rules</h3>
-        <p>✔ Minimum 8 characters</p>
-        <p>✔ One uppercase letter</p>
-        <p>✔ One lowercase letter</p>
-        <p>✔ One number</p>
-        <p>✔ One special character</p>
-    </div>
 </div>
 
 </body>
